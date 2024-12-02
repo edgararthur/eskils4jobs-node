@@ -1,33 +1,46 @@
 const express = require('express');
 
+// relationships in models
+const { Students, Courses, Instructors, Enrollments, Class, Departments } = require('./models/relationships');
+
+// get all routes from studentRoutes
+const studentRoutes = require('./routes/studentRoute')
+const instructorRoutes = require('./routes/instructorRoute')
+const courseRoutes = require('./routes/courseRoute')
+const departmentRoutes = require('./routes/departmentRoute')
+const enrollmentRoutes = require('./routes/enrollmentRoute')
+const classRoutes = require('./routes/classRoute')
+
+// import database connection
+const sequelize = require('./database');
+
+// import all models
+const Student = require('./models/students')
+const Department = require('./models/department');
+const Course = require('./models/courses');
+const Enrollment = require('./models/enrollment');
+const Instructor = require('./models/instructor');
+
 const server = express()
 
-let students = [
-    {id: 1, name: "edward arthur", dob: "2002-10-11", email: "test@gmail.com"}
-]
+// body parser middleware
+server.use(express.json());
+server.use(express.urlencoded({ extended: false }));
 
-const db = require('./util/database')
+// endpoint to get student routes
+server.use('/api/v1', studentRoutes);
+server.use('/api/v1', instructorRoutes);
+server.use('/api/v1', courseRoutes);
+// server.use('/api/v1', departmentRoutes);
+server.use('/api/v1', enrollmentRoutes);
+server.use('/api/v1', classRoutes);
 
-// db.execute('SELECT * FROM students')
 
-server.get('/', (request, response) => {
-    response.send('<h1>This is my first node server after installing express</h1>')
+sequelize.sync({ alter: true}).then((result) => {
+    console.log('Database synced successfully');
+}).catch((error) => {
+    console.log('Error syncing database', error);
 })
-
-server.get('/api/student/:id', (request, response) => {
-    const id = parseInt(request.params.id);
-
-    const student = students.find(student => student.id === id);
-
-    console.log(student)
-
-    if (!student) {
-        return response.json({ message: "student with id not found" })
-    } else {
-        response.json(student);
-    }
-        
-});
 
 server.listen(8000, () => {
     console.log("Server listening on port 8000");

@@ -9,9 +9,9 @@
             "server": "localhost",
             "port": 3306,
             "driver": "MySQL",
-            "name": "mysqlServer",
-            "database": "student_management",
+            "name": "test",
             "username": "root",
+            "database": "student_management",
             "askForPassword": true
         }
     ]
